@@ -1,26 +1,20 @@
-# Taco - a collaborative TODO application
+# Taco - A Collaborative TODO Application
 
-**Taco** 是一款轻量级的全栈协作待办事项系统，与众多同类型项目不同，Taco引入了方便快捷的 **PIN 码分享机制** 提供了比传统二维码等分享方式更快的一种选择
+**Taco** is a lightweight full-stack TODO application built with Flutter and Flask. It supports basic task management, local storage, and a simple PIN-based sharing feature that allows users to share task content without using an account system.
 
-**Taco** is a cross-platform task management App using Flutter, Flask and MySQL database, implementing a complete full stack workflow featuring a PIN-based sharing system, allowing users to synchronize and share contents.
+The project focuses on building a practical mobile application with a small backend service. The PIN sharing feature provides a straightforward way to transfer or reuse task information between users or devices.
 
-## 核心亮点 
+## Key Features
 
-* **全栈自研**：前端使用 Flutter 实现丝滑的跨平台体验，后端使用 Python/Flask 驱动。
-* **即时协作**：独创的 PIN 码分享逻辑，无需复杂的账号体系即可实现任务实时同步。
-* **多语言支持**：原生支持中英文切换（i18n），适应全球化使用场景。
-* **持久化存储**：结合本地状态管理与远程数据库，确保数据安全与实时性。
-
-## Key Feature
-
-* **Full-Stack Development**: Independently engineered a cross-platform application using Flutter for a seamless UI/UX and Python/Flask to power backend services.
-* **Instant Collaboration**: Developed a unique PIN-based sharing logic that enables real-time task synchronization without the friction of complex account registration.
-* **Multi-Language Support (i18n)**: Integrated native internationalization for Chinese and English, ensuring a localized experience for a global user base.
-* **Hybrid Data Persistence**: Implemented a robust storage architecture combining local state management with a remote database (MySQL) to ensure data integrity and low-latency synchronization.
+* **Task Management**: Create, view, update, complete, and delete TODO items.
+* **PIN-Based Sharing**: Generate a short PIN for a task and use it to retrieve shared task content.
+* **Local and Remote Storage**: Store task data locally and use a backend database for shared PIN records.
+* **Multi-Language Support**: Supports both English and Chinese through Flutter localization.
+* **Full-Stack Implementation**: Uses Flutter for the mobile app and Flask for the backend API.
 
 ---
 
-## 软件截图 (Screenshots)
+## Screenshots
 
 <div align="center">
   <table style="table-layout: fixed; width: 100%; border-collapse: collapse;">
@@ -55,35 +49,52 @@
 
 ---
 
-## 技术栈 (Tech Stack)
+## Tech Stack
 
-### Frontend (Taco Shell)
+### Frontend
+
 * **Framework**: Flutter
 * **State Management**: Provider / setState
-* **Internationalization**: flutter_localizations (zh/en)
+* **Internationalization**: flutter_localizations (en/zh)
 
-### Backend (Taco Filling)
+### Backend
+
 * **Language**: Python 3.x
 * **Framework**: Flask
 * **Database**: SQLite
-* **Communication**: RESTful API
-
---- 
-## 如何运行 (How to run)
-
-1. Set up the backend server by using 'python taco_share.py' in backend fold.
-2. Replace contents 'YOUR BACKEND SERVER IP' with your actual IP in 'add_pin_page.dart' and 'detail_page'.
-3. Connect to a device and run 'flutter run'.
+* **API Style**: RESTful API
 
 ---
 
-## 项目结构 (Project Structure)
+## How to Run
+
+1. Start the backend server:
+
+   ```bash
+   python taco_share.py
+   ```
+
+2. Replace `YOUR BACKEND SERVER IP` with your actual backend IP address in:
+
+   * `add_pin_page.dart`
+   * `detail_page.dart`
+
+3. Connect a device or emulator, then run the Flutter app:
+
+   ```bash
+   flutter run
+   ```
+
+---
+
+## Project Structure
 
 ```text
 Taco-Collaborative-TODO-APP/
-├── lib/               # Flutter 业务逻辑 (Pages, Widgets, Models)
-├── backend/           # Python 后端服务
-│   ├── taco_share.py  # API 核心逻辑
-│   └── taco.db        # 数据库文件
-├── assets/            # 静态资源（图标等）
-└── README.md          # 你现在看到的这个
+├── lib/               # Flutter app code, including pages, widgets, and models
+├── backend/           # Python backend service
+│   ├── taco_share.py  # Backend API logic
+│   └── taco.db        # SQLite database file
+├── assets/            # Static assets, such as icons and screenshots
+└── README.md          # Project documentation
+```
