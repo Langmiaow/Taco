@@ -60,7 +60,6 @@ def share():
     remark = data.get("remark", "").strip()
     ddl = data.get("ddl")
 
-    #查重 如果重复则删除数据库原有数据
     todo_hash = toHash(content, remark, ddl)
 
     conn = get_db()
@@ -76,11 +75,7 @@ def share():
             "duplicate": True
         }), 200
     
-    #生成四位数随机pin
-    
     pin = generate_pin(conn)
-
-     #写入数据库
 
     cur.execute("""
         INSERT INTO taco_share (pin, todo_hash, content, remark, ddl, created_at)
@@ -122,7 +117,7 @@ def get_shared(pin):
         "done": True,
         "content": row["content"],
         "remark": row["remark"] or "",
-        "ddl": row["ddl"],   # 可能是 null
+        "ddl": row["ddl"],
     }), 200
 
 

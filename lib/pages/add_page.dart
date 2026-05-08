@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'dart:io';
-import 'dart:convert';
-import 'package:path_provider/path_provider.dart';
 import 'package:flutter/services.dart';
 import 'package:taco/pages/add_pin_page.dart';
 import 'package:taco/l10n/app_localizations.dart';
+import 'package:taco/services/todo_storage.dart';
 
 class AddPage extends StatefulWidget {
   const AddPage({super.key});
@@ -32,35 +30,6 @@ class _AddPageState extends State<AddPage> {
     _remarkScrollCtrl.dispose();
     super.dispose();
   }
-
-
-  Future<void> addTodo(
-      String content,
-      String remark,
-      DateTime? ddl,
-      bool isDone,
-      ) async {
-    final dir = await getApplicationDocumentsDirectory();
-    final file = File("${dir.path}/todoList.json");
-
-    Map<String, dynamic> data;
-    if (await file.exists()) {
-      final present = await file.readAsString();
-      data = jsonDecode(present);
-    } else {
-      data = {"todos": []};
-    }
-
-    data["todos"].add({
-      "content": content,
-      "remark": remark,
-      "ddl": ddl?.millisecondsSinceEpoch,
-      "isDone": isDone,
-    });
-
-    await file.writeAsString(jsonEncode(data));
-  }
-
 
   Future<void> _pickDate() async {
     final picked = await showDatePicker(
@@ -107,7 +76,7 @@ class _AddPageState extends State<AddPage> {
 
     setState(() => _saving = true);
     try {
-      await addTodo(content, remark, _ddl, false);
+      await TodoStorage.addTodo(content, remark, _ddl, false);
       if (mounted) {
         HapticFeedback.mediumImpact();
         FocusScope.of(context).unfocus();
@@ -179,7 +148,7 @@ class _AddPageState extends State<AddPage> {
 
                       final map = result as Map<String, dynamic>;
 
-                      await addTodo(
+                      await TodoStorage.addTodo(
                         (map["content"] ?? "") as String,
                         (map["remark"] ?? "") as String,
                         map["ddl"] == null
