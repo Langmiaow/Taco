@@ -15,13 +15,23 @@ class TodoStorage {
       return {"todos": []};
     }
 
-    final content = await file.readAsString();
+    try {
+      final content = await file.readAsString();
 
-    if (content.trim().isEmpty) {
+      if (content.trim().isEmpty) {
+        return {"todos": []};
+      }
+
+      final data = jsonDecode(content);
+
+      if (data is Map<String, dynamic> && data["todos"] is List) {
+        return data;
+      }
+
+      return {"todos": []};
+    } catch (_) {
       return {"todos": []};
     }
-
-    return jsonDecode(content);
   }
 
   static Future<void> writeAllTodos(List todos) async {
