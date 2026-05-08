@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'dart:io';
-import 'dart:convert';
-import 'package:path_provider/path_provider.dart';
 import 'package:taco/pages/detail_page.dart';
 import 'package:taco/pages/add_page.dart';
 import 'package:taco/l10n/app_localizations.dart';
 import 'package:taco/main.dart';
+import 'package:taco/services/todo_storage.dart';
 
 
 class TodoPage extends StatefulWidget {
@@ -24,79 +22,8 @@ class _TodoPage extends State<TodoPage> {
   Set<int> selectedIndex = {};
   Set<int> pendingSet = {};
 
-  // Read to do list
-  Future<Map<String, dynamic>> readTodoList() async {
-    final dir = await getApplicationDocumentsDirectory();
-    final file = File("${dir.path}/todoList.json");
-
-    if (!await file.exists()) {
-      return {"todos": []}; // Return empty list
-    }
-
-    final content = await file.readAsString();
-    return jsonDecode(content);
-  }
-
-  // add
-  Future<void> addTodo(
-    String content,
-    String remark,
-    DateTime ddl,
-    bool isDone,
-  ) async {
-    final dir = await getApplicationDocumentsDirectory();
-    final file = File("${dir.path}/todoList.json");
-
-    Map<String, dynamic> data;
-    if (await file.exists()) {
-      final present = await file.readAsString();
-      data = jsonDecode(present);
-    } else {
-      data = {"todos": []};
-    }
-
-    data["todos"].add({
-      "content": content,
-      "remark": remark,
-      "ddl": ddl.millisecondsSinceEpoch,
-      "isDone": isDone,
-    });
-
-    await file.writeAsString(jsonEncode(data));
-  }
-
-  // delete
-  Future<void> deleteSelectedTodo() async {
-    final dir = await getApplicationDocumentsDirectory();
-    final file = File("${dir.path}/todoList.json");
-
-    final data = await readTodoList();
-    final List todos = (data["todos"] ?? []) as List;
-
-    final index = selectedIndex.toList()..sort((a, b) => b.compareTo(a));
-    for (final i in index) {
-      if (i >= 0 && i < todos.length) {
-        todos.removeAt(i);
-      }
-    }
-
-    await file.writeAsString(jsonEncode({"todos": todos}));
-  }
-
   Future<void> _setDone(int index, bool done) async {
-    final dir = await getApplicationDocumentsDirectory();
-    final file = File("${dir.path}/todoList.json");
-
-    final data = await readTodoList();
-    final List todos = List.from(data["todos"] ?? []);
-
-    if (index < 0 || index >= todos.length) return;
-
-    final Map t = Map<String, dynamic>.from(todos[index] as Map);
-    t["isDone"] = done;
-    todos[index] = t;
-
-    await file.writeAsString(jsonEncode({"todos": todos}));
+    await TodoStorage.setDone(index, done);
     setState(() {});
   }
 
@@ -288,7 +215,7 @@ class _TodoPage extends State<TodoPage> {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: FutureBuilder(
-                    future: readTodoList(),
+                    future: TodoStorage.readTodoList(),
                     builder: (context, tempTop) {
                       final List topTodos =
                       (tempTop.data?["todos"] ?? []) as List;
@@ -352,7 +279,7 @@ class _TodoPage extends State<TodoPage> {
                                   onPressed: selectedIndex.isEmpty
                                       ? null
                                       : () async {
-                                    final data = await readTodoList();
+                                    final data = await TodoStorage.readTodoList();
                                     final List todos = List.from(
                                       data["todos"],
                                     );
@@ -370,14 +297,7 @@ class _TodoPage extends State<TodoPage> {
                                     }
 
                                     // add back to list
-                                    final dir =
-                                    await getApplicationDocumentsDirectory();
-                                    final file = File(
-                                      "${dir.path}/todoList.json",
-                                    );
-                                    await file.writeAsString(
-                                      jsonEncode({"todos": todos}),
-                                    );
+                                    await TodoStorage.writeAllTodos(todos);
 
                                     setState(() {
                                       selectedIndex.clear();
@@ -403,22 +323,15 @@ class _TodoPage extends State<TodoPage> {
                                             GestureDetector(
                                               onTap: () async {
                                                 todos.addAll(removedItems);
-                                                await file.writeAsString(
-                                                  jsonEncode({
-                                                    "todos": todos,
-                                                  }),
-                                                );
+                                                await TodoStorage.writeAllTodos(todos);
                                                 setState(() {});
-                                                ScaffoldMessenger.of(
-                                                  context,
-                                                ).hideCurrentSnackBar();
+                                                ScaffoldMessenger.of(context).hideCurrentSnackBar();
                                               },
                                               child: Text(
                                                 t.undo,
                                                 style: TextStyle(
                                                   color: Colors.white,
-                                                  fontWeight:
-                                                  FontWeight.bold,
+                                                  fontWeight: FontWeight.bold,
                                                 ),
                                               ),
                                             ),
@@ -499,7 +412,7 @@ class _TodoPage extends State<TodoPage> {
                 SizedBox(height: 24),
                 Expanded(
                   child: FutureBuilder(
-                    future: readTodoList(),
+                    future: TodoStorage.readTodoList(),
                     builder: (context, snapshot) {
                       if (!snapshot.hasData) {
                         return SizedBox();
@@ -591,10 +504,7 @@ class _TodoPage extends State<TodoPage> {
                             }
                           });
 
-
-                          final dir = await getApplicationDocumentsDirectory();
-                          final file = File("${dir.path}/todoList.json");
-                          await file.writeAsString(jsonEncode({"todos": newTodos}));
+                          await TodoStorage.writeAllTodos(newTodos);
                         },
 
                         itemBuilder: (context, i) {
@@ -608,7 +518,7 @@ class _TodoPage extends State<TodoPage> {
                           );
 
                           return KeyedSubtree(
-                            key: ObjectKey(t), // ✅ 永远都有 key
+                            key: ObjectKey(t),
                             child: selectMode
                                 ? ReorderableDelayedDragStartListener(
                               index: i,
