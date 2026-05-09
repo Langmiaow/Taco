@@ -181,7 +181,7 @@ class _AddPinPage extends State<AddPinPage> {
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Text(
               t.addByCodeHint,
-              style: const TextStyle(fontSize: 22),
+              style: const TextStyle(fontSize: 18),
               textAlign: TextAlign.center,
             ),
           ),
