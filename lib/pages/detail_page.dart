@@ -19,6 +19,7 @@ class _DetailPage extends State<DetailPage> {
   bool isDone = false;
   bool showEdit = false;
   bool sharing = false;
+  bool hasUpdated = false;
   String content = "";
   String remark = "";
   int? ddlTs;
@@ -161,8 +162,25 @@ class _DetailPage extends State<DetailPage> {
 
     HapticFeedback.mediumImpact();
     FocusScope.of(context).unfocus();
-    await Future.delayed(Duration(milliseconds: 200));
-    Navigator.pop(context, true);
+    await Future.delayed(const Duration(milliseconds: 200));
+
+    if (!mounted) return;
+
+    setState(() {
+      content = newContent;
+      remark = newRemark;
+      ddlTs = _ddlEdit?.millisecondsSinceEpoch;
+      hasUpdated = true;
+      showEdit = false;
+      emptyContent = false;
+
+      final locale = Localizations.localeOf(context);
+      ddlText = _ddlEdit == null
+          ? ""
+          : (locale.languageCode == 'zh'
+          ? _dateFormatZH(_ddlEdit!)
+          : _dateFormatEN(_ddlEdit!));
+    });
   }
 
   Future<void> _share() async {
@@ -213,7 +231,7 @@ class _DetailPage extends State<DetailPage> {
 
   Color _remainingDaysColor(int inp) {
     if (inp < 0) {
-      return const Color.fromARGB(255, 232, 235, 238);
+      return const Color.fromARGB(255, 220, 226, 232);
     } else if (inp < 2) {
       return const Color.fromARGB(255, 251, 224, 236);
     } else if (inp < 15) {
@@ -250,6 +268,8 @@ class _DetailPage extends State<DetailPage> {
     return PopScope(
       canPop: !showEdit,
       onPopInvokedWithResult: (didPop, result) {
+        if (didPop) return;
+
         if (showEdit) {
           setState(() {
             showEdit = false;
@@ -368,7 +388,7 @@ class _DetailPage extends State<DetailPage> {
                         color: Colors.white,
                         child: IconButton(
                           onPressed: () {
-                            Navigator.pop(context);
+                            Navigator.pop(context, hasUpdated);
                           },
                           icon: const Icon(Icons.arrow_back),
                           padding: const EdgeInsets.all(12),

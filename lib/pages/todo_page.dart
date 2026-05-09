@@ -62,12 +62,12 @@ class _TodoPage extends State<TodoPage> {
                 return;
               }
 
-              final updated = await Navigator.push<bool>(
+              await Navigator.push(
                 context,
                 MaterialPageRoute(builder: (_) => DetailPage(todoIndex: index)),
               );
 
-              if (updated == true) {
+              if (mounted) {
                 setState(() {});
               }
             },
