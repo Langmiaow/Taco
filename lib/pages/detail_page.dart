@@ -35,12 +35,12 @@ class _DetailPage extends State<DetailPage> {
   final ScrollController _editRemarkScrollCtrl = ScrollController();
   DateTime? _ddlEdit;
 
-  String _formatZH(DateTime d) {
+  String _dateFormatZH(DateTime d) {
     final dateCN = ["", "一", "二", "三", "四", "五", "六", "日"];
     return "${d.year}年${d.month}月${d.day}日 周${dateCN[d.weekday]}";
   }
 
-  String _formatEN(DateTime d) {
+  String _dateFormatEN(DateTime d) {
     final dateEN = [
       "",
       "Monday",
@@ -69,6 +69,28 @@ class _DetailPage extends State<DetailPage> {
     return "${dateEN[d.weekday]} ${monthEN[d.month]} ${d.day} ${d.year}";
   }
 
+  String _remainingDaysFormatZH(int d) {
+    if (d < 0) {
+      return "已过期";
+    } else if (d == 0) {
+      return "今天之内";
+    } else {
+      return "还剩 $d 天";
+    }
+  }
+
+  String _remainingDaysFormatEN(int d) {
+    if (d < 0) {
+      return "Expired";
+    } else if (d == 0) {
+      return "Due today";
+    } else if (d == 1) {
+      return "$d day remaining";
+    } else {
+      return "$d days remaining";
+    }
+  }
+
   Future<void> _load() async {
     final data = await TodoStorage.readTodoList();
     final List todos = List.from(data["todos"] ?? []);
@@ -93,8 +115,8 @@ class _DetailPage extends State<DetailPage> {
       ddlText = parsed == null
           ? ""
           : (locale.languageCode == 'zh'
-                ? _formatZH(parsed)
-                : _formatEN(parsed));
+                ? _dateFormatZH(parsed)
+                : _dateFormatEN(parsed));
 
       isDone = (t["isDone"] ?? false) == true;
     });
@@ -176,6 +198,27 @@ class _DetailPage extends State<DetailPage> {
         unableToShare = true;
         sharing = false;
       });
+    }
+  }
+
+  int _remainingDays(DateTime inp) {
+    final now = DateTime.now();
+
+    final today = DateTime(now.year, now.month, now.day);
+    final targetDay = DateTime(inp.year, inp.month, inp.day);
+
+    return targetDay.difference(today).inDays;
+  }
+
+  Color _remainingDaysColor(int inp) {
+    if (inp < 0) {
+      return const Color.fromARGB(255, 232, 235, 238);
+    } else if (inp < 2) {
+      return const Color.fromARGB(255, 251, 224, 236);
+    } else if (inp < 15) {
+      return const Color.fromARGB(255, 255, 241, 213);
+    } else {
+      return const Color.fromARGB(255, 207, 239, 207);
     }
   }
 
@@ -433,7 +476,10 @@ class _DetailPage extends State<DetailPage> {
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: Container(
                     width: double.infinity,
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 16),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 16,
+                    ),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(12),
                       color: Colors.white,
@@ -550,8 +596,8 @@ class _DetailPage extends State<DetailPage> {
                                                 _ddlEdit = picked;
                                                 ddlText =
                                                     locale.languageCode == 'zh'
-                                                    ? _formatZH(picked)
-                                                    : _formatEN(picked);
+                                                    ? _dateFormatZH(picked)
+                                                    : _dateFormatEN(picked);
                                               });
                                             }
                                           },
@@ -617,8 +663,10 @@ class _DetailPage extends State<DetailPage> {
                                             ddlText = _ddlEdit == null
                                                 ? ""
                                                 : (locale.languageCode == 'zh'
-                                                      ? _formatZH(_editDdlInit!)
-                                                      : _formatEN(
+                                                      ? _dateFormatZH(
+                                                          _editDdlInit!,
+                                                        )
+                                                      : _dateFormatEN(
                                                           _editDdlInit!,
                                                         ));
                                           });
@@ -651,32 +699,77 @@ class _DetailPage extends State<DetailPage> {
                                     ),
                                   ],
                                 )
-                              : Container(
-                                  width: double.infinity,
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 10,
-                                    vertical: 16,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(12),
-                                    color: Colors.white,
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      const SizedBox(width: 12),
-                                      const Icon(
-                                        Icons.calendar_today_outlined,
-                                        color: Colors.grey,
+                              : Column(
+                                  children: [
+                                    Container(
+                                      width: double.infinity,
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 10,
+                                        vertical: 16,
                                       ),
-                                      const SizedBox(width: 16),
-                                      Expanded(
-                                        child: Text(
-                                          ddlText,
-                                          style: TextStyle(fontSize: 16),
+                                      decoration: BoxDecoration(
+                                        borderRadius: isDone
+                                            ? BorderRadius.circular(12)
+                                            : BorderRadius.only(
+                                                topLeft: Radius.circular(12),
+                                                topRight: Radius.circular(12),
+                                              ),
+                                        color: Colors.white,
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          const SizedBox(width: 12),
+                                          const Icon(
+                                            Icons.calendar_today_outlined,
+                                            color: Colors.grey,
+                                          ),
+                                          const SizedBox(width: 16),
+                                          Expanded(
+                                            child: Text(
+                                              ddlText,
+                                              style: TextStyle(fontSize: 16),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+
+                                    if (!isDone)
+                                      Container(
+                                        width: double.infinity,
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 10,
+                                          vertical: 10,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.only(
+                                            bottomLeft: Radius.circular(12),
+                                            bottomRight: Radius.circular(12),
+                                          ),
+                                          color: _remainingDaysColor(
+                                            _remainingDays(_ddlEdit!),
+                                          ),
+                                        ),
+                                        child: Row(
+                                          children: [
+                                            const SizedBox(width: 16),
+                                            Text(
+                                              Localizations.localeOf(
+                                                        context,
+                                                      ).languageCode ==
+                                                      'zh'
+                                                  ? _remainingDaysFormatZH(
+                                                      _remainingDays(_ddlEdit!),
+                                                    )
+                                                  : _remainingDaysFormatEN(
+                                                      _remainingDays(_ddlEdit!),
+                                                    ),
+                                              style: TextStyle(fontSize: 14),
+                                            ),
+                                          ],
                                         ),
                                       ),
-                                    ],
-                                  ),
+                                  ],
                                 ),
                         ),
                       ),
