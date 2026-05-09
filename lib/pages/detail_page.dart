@@ -272,6 +272,15 @@ class _DetailPage extends State<DetailPage> {
 
         if (showEdit) {
           setState(() {
+            _ddlEdit = _editDdlInit;
+
+            final locale = Localizations.localeOf(context);
+            ddlText = _ddlEdit == null
+                ? ""
+                : (locale.languageCode == 'zh'
+                ? _dateFormatZH(_ddlEdit!)
+                : _dateFormatEN(_ddlEdit!));
+
             showEdit = false;
             emptyContent = false;
           });
@@ -372,8 +381,20 @@ class _DetailPage extends State<DetailPage> {
                                 _editDdlInit = _ddlEdit;
                                 _contentCtrl.text = content;
                                 _remarkCtrl.text = remark;
+                                showEdit = true;
+                              } else {
+                                _ddlEdit = _editDdlInit;
+
+                                final locale = Localizations.localeOf(context);
+                                ddlText = _ddlEdit == null
+                                    ? ""
+                                    : (locale.languageCode == 'zh'
+                                    ? _dateFormatZH(_ddlEdit!)
+                                    : _dateFormatEN(_ddlEdit!));
+
+                                showEdit = false;
+                                emptyContent = false;
                               }
-                              showEdit = !showEdit;
                             });
                           },
                           icon: Icon(showEdit ? Icons.edit_off : Icons.edit),
