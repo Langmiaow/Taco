@@ -151,10 +151,11 @@ class _DetailPage extends State<DetailPage> {
     final List todos = List.from(data["todos"] ?? []);
     if (widget.todoIndex < 0 || widget.todoIndex >= todos.length) return;
 
-    final Map t = todos[widget.todoIndex] as Map;
+    final Map t = Map<String, dynamic>.from(todos[widget.todoIndex] as Map);
     t["content"] = newContent;
     t["remark"] = newRemark;
     t["ddl"] = _ddlEdit?.millisecondsSinceEpoch;
+    todos[widget.todoIndex] = t;
 
     await TodoStorage.writeAllTodos(todos);
 

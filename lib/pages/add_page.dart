@@ -20,7 +20,6 @@ class _AddPageState extends State<AddPage> {
   DateTime? _ddl;
   bool _saving = false;
   bool emptyContent = false;
-  bool isFirstIn = true;
   bool canPop = true;
 
   @override

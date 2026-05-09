@@ -75,7 +75,7 @@ class _ShareInfoPage extends State<ShareInfoPage> {
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Text(
               t.shareHint,
-              style: const TextStyle(fontSize: 16),
+              style: const TextStyle(fontSize: 18),
               textAlign: TextAlign.center,
             ),
           ),
