@@ -1,16 +1,54 @@
-# Taco - A Collaborative TODO Application
+<h1 align="center">Taco</h1>
 
-**Taco** is a lightweight full-stack TODO application built with Flutter and Flask. It supports basic task management, local storage, and a simple PIN-based sharing feature that allows users to share task content without using an account system.
+<p align="center">
+  <b>A lightweight collaborative TODO app built with Flutter and Flask.</b>
+</p>
 
-The project focuses on building a practical mobile application with a small backend service. The PIN sharing feature provides a straightforward way to transfer or reuse task information between users or devices.
+<p align="center">
+  Create tasks, manage your workflow, and share TODO items with a simple PIN-based sharing system.
+</p>
 
-## Key Features
+<p align="center">
+  <a href="#why-taco">Why Taco</a> ·
+  <a href="#features">Features</a> ·
+  <a href="#screenshots">Screenshots</a> ·
+  <a href="#tech-stack">Tech Stack</a> ·
+  <a href="#getting-started">Getting Started</a>
+</p>
 
-* **Task Management**: Create, view, update, complete, and delete TODO items.
-* **PIN-Based Sharing**: Generate a short PIN for a task and use it to retrieve shared task content.
-* **Local and Remote Storage**: Store task data locally and use a backend database for shared PIN records.
-* **Multi-Language Support**: Supports both English and Chinese through Flutter localization.
-* **Full-Stack Implementation**: Uses Flutter for the mobile app and Flask for the backend API.
+---
+
+## Why Taco
+
+Most TODO apps are either too simple for sharing or too complex because they require accounts, cloud sync, and team workspaces.
+
+Taco focuses on a smaller and cleaner workflow:
+
+> Write a task locally. Generate a PIN. Share the task content. Retrieve it from another device.
+
+It is designed as a practical full-stack mobile application that combines local task management with a lightweight backend sharing service.
+
+Taco is suitable for:
+
+- personal TODO management;
+- quick task sharing between users;
+- transferring task content between devices;
+- demonstrating a Flutter + Flask full-stack mobile architecture;
+- experimenting with account-free collaboration features.
+
+---
+
+## Features
+
+| Feature | Description |
+|---|---|
+| Task management | Create, view, edit, complete, delete, and reorder TODO items |
+| Local-first usage | Store and manage tasks locally on the device |
+| PIN-based sharing | Generate a short PIN to share task content without user accounts |
+| Task retrieval | Enter a PIN to retrieve shared task content from the backend |
+| Multi-language support | Supports English and Chinese localization |
+| Simple backend service | Uses Flask and SQLite to store shared PIN records |
+| Mobile-first interface | Built with Flutter for a smooth Android app experience |
 
 ---
 
@@ -21,27 +59,27 @@ The project focuses on building a practical mobile application with a small back
     <tr>
       <td align="center" valign="bottom" width="16%">
         <img src="assets/screenshots/1.png" height="320" /><br/>
-        <sub style="font-size: 12px;"><b>Homepage</b></sub>
+        <sub><b>Homepage</b></sub>
       </td>
       <td align="center" valign="bottom" width="16%">
         <img src="assets/screenshots/2.png" height="320" /><br/>
-        <sub style="font-size: 12px;"><b>Add Task</b></sub>
+        <sub><b>Add Task</b></sub>
       </td>
       <td align="center" valign="bottom" width="16%">
         <img src="assets/screenshots/3.png" height="320" /><br/>
-        <sub style="font-size: 12px;"><b>Generate PIN</b></sub>
+        <sub><b>Generate PIN</b></sub>
       </td>
       <td align="center" valign="bottom" width="16%">
         <img src="assets/screenshots/4.png" height="320" /><br/>
-        <sub style="font-size: 12px;"><b>Enter PIN</b></sub>
+        <sub><b>Enter PIN</b></sub>
       </td>
       <td align="center" valign="bottom" width="16%">
         <img src="assets/screenshots/5.png" height="320" /><br/>
-        <sub style="font-size: 12px;"><b>Task Detail</b></sub>
+        <sub><b>Task Detail</b></sub>
       </td>
       <td align="center" valign="bottom" width="16%">
         <img src="assets/screenshots/6.png" height="320" /><br/>
-        <sub style="font-size: 12px; white-space: nowrap;"><b>List Management</b></sub>
+        <sub><b>List Management</b></sub>
       </td>
     </tr>
   </table>
@@ -49,41 +87,117 @@ The project focuses on building a practical mobile application with a small back
 
 ---
 
+## How It Works
+
+Taco uses a simple local-first workflow.
+
+```text
+Create TODO item locally
+        ↓
+Generate sharing PIN
+        ↓
+Store shared task content in backend SQLite database
+        ↓
+Another user or device enters the PIN
+        ↓
+Shared task content is retrieved
+```
+
+This avoids the need for user accounts while still supporting basic task sharing.
+
+---
+
 ## Tech Stack
 
 ### Frontend
 
-* **Framework**: Flutter
-* **State Management**: Provider / setState
-* **Internationalization**: flutter_localizations (en/zh)
+| Technology | Purpose |
+|---|---|
+| Flutter | Cross-platform mobile app development |
+| Dart | Application logic |
+| Provider / setState | State management |
+| flutter_localizations | English and Chinese localization |
 
 ### Backend
 
-* **Language**: Python 3.x
-* **Framework**: Flask
-* **Database**: SQLite
-* **API Style**: RESTful API
+| Technology | Purpose |
+|---|---|
+| Python 3 | Backend language |
+| Flask | REST API service |
+| SQLite | Lightweight database for shared PIN records |
 
 ---
 
-## How to Run
+## Getting Started
 
-1. Start the backend server:
+### Prerequisites
 
-   ```bash
-   python taco_share.py
-   ```
+Make sure you have the following installed:
 
-2. Replace `YOUR BACKEND SERVER IP` with your actual backend IP address in:
+- Flutter SDK
+- Dart SDK
+- Python 3
+- Flask
+- Android Studio or a connected Android device/emulator
 
-   * `add_pin_page.dart`
-   * `detail_page.dart`
+---
 
-3. Connect a device or emulator, then run the Flutter app:
+### 1. Clone the Repository
 
-   ```bash
-   flutter run
-   ```
+```bash
+git clone https://github.com/your-username/Taco-Collaborative-TODO-APP.git
+cd Taco-Collaborative-TODO-APP
+```
+
+---
+
+### 2. Start the Backend Server
+
+Go to the backend directory:
+
+```bash
+cd backend
+```
+
+Install Flask if needed:
+
+```bash
+pip install flask
+```
+
+Start the backend server:
+
+```bash
+python taco_share.py
+```
+
+The backend service will handle PIN generation and shared task retrieval.
+
+---
+
+### 3. Configure the Backend Address
+
+Update the backend server address in the Flutter app.
+
+Replace `YOUR BACKEND SERVER IP` with your actual backend IP address in:
+
+```text
+lib/add_pin_page.dart
+lib/detail_page.dart
+```
+
+For local testing, make sure your phone or emulator can access the backend server.
+
+---
+
+### 4. Run the Flutter App
+
+Return to the project root and run:
+
+```bash
+flutter pub get
+flutter run
+```
 
 ---
 
@@ -91,10 +205,81 @@ The project focuses on building a practical mobile application with a small back
 
 ```text
 Taco-Collaborative-TODO-APP/
-├── lib/               # Flutter app code, including pages, widgets, and models
-├── backend/           # Python backend service
-│   ├── taco_share.py  # Backend API logic
-│   └── taco.db        # SQLite database file
-├── assets/            # Static assets, such as icons and screenshots
-└── README.md          # Project documentation
+├── lib/                # Flutter app code
+│   ├── pages/          # App pages and screens
+│   ├── widgets/        # Reusable UI components
+│   ├── models/         # Task data models
+│   └── l10n/           # Localization files
+├── backend/            # Flask backend service
+│   ├── taco_share.py   # Backend API logic
+│   └── taco.db         # SQLite database file
+├── assets/             # Icons, images, and screenshots
+└── README.md           # Project documentation
 ```
+
+---
+
+## API Overview
+
+The backend provides a small REST-style API for sharing task content through PIN codes.
+
+| Function | Description |
+|---|---|
+| Generate PIN | Stores task content and returns a short PIN |
+| Retrieve task | Uses a PIN to fetch shared task content |
+| SQLite storage | Keeps shared PIN records in a lightweight local database |
+
+The backend is intentionally simple so the app can be easily tested, modified, or extended.
+
+---
+
+## Design Goals
+
+Taco is built around four design goals:
+
+1. **Simple task management**  
+   The app focuses on essential TODO operations without unnecessary complexity.
+
+2. **Account-free sharing**  
+   Users can share task content through a PIN instead of creating an account.
+
+3. **Local-first experience**  
+   Daily task management works locally, while sharing is handled only when needed.
+
+4. **Small full-stack architecture**  
+   The project demonstrates how a Flutter frontend can work with a lightweight Flask backend.
+
+---
+
+## Current Limitations
+
+Taco is an experimental project and is not intended as a production-ready collaboration platform.
+
+Current limitations include:
+
+- no user account system;
+- no end-to-end encryption for shared task content;
+- no advanced permission control;
+- no long-term cloud synchronization;
+- backend address needs to be configured manually;
+- PIN records depend on the backend database.
+
+---
+
+## Future Improvements
+
+Possible future improvements include:
+
+- deploying the backend to a cloud service;
+- adding automatic backend configuration;
+- improving PIN expiration and cleanup;
+- adding authentication options;
+- supporting multi-device synchronization;
+- improving UI animations and accessibility;
+- adding unit tests and API tests.
+
+---
+
+## License
+
+This project is licensed under the Apache License 2.0.
